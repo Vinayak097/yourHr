@@ -1,29 +1,55 @@
-import React, { useState } from "react";
-
+import React from "react";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 function Signup() {
-  const [fullname,setfullname]=useState();
-  const [password,setpassword]=useState();
-  const [email,setEmail]=useState();
-  const [files,setfile]=useState();
-  
-  onsubmit=(e)=>{
+  const navigate=useNavigate()
+  const [fullname, setFullname] = useState("");
+  const [file, setFile] = useState("");
+  const [password, setpassword] = useState(null);
+  const [email, setEmail] = useState(null);
+
+  const submitImage = async (e) => {
     e.preventDefault();
-    console.log(files,fullname,email,password)
-  }
+    const formData = new FormData();
+
+    formData.append("file", file);
+    formData.append('fullname',fullname)
+    formData.append('password',password)
+    formData.append('email',email);
+    console.log(file, fullname);
+    const result = await axios.post(
+      "http://localhost:8000/auth/signup",
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    if (result.data.statusText == "OK") {
+      alert("Uploaded Successfully!!!");
+    }
+    if(result.data.token){
+      localStorage.setItem("ytoken",result.data.token)
+      console.log("token settled")
+    }
+    navigate("/")
+    
+  };
   return (
-    <div className="flex justify-center items-center   h-screen">
-      <form action=" " className="flex flex-col gap-2" onSubmit={()=>{onsubmit()}}>
+    <div className="flex items-center justify-center h-screen">
+      <form className="formStyle flex flex-col gap-3 text-center" onSubmit={submitImage} >
+        <h4 className="mb-5 font-light">Singup to <span className= " font-serif text-blue-500 text-xl ml-4">YourHr</span></h4>
         <label className="input input-bordered flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16" 
+            viewBox="0 0 16 16"
             fill="currentColor"
             className="h-4 w-4 opacity-70"
           >
             <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
             <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
           </svg>
-          <input onChange={(e)=>{setEmail(e.target.value)}} type="text" className="grow" placeholder="Email"  required/>
+          <input onChange={(e)=>{setEmail(e.target.value)}} type="text" className="grow" placeholder="Email"  required />
         </label>
         <label className="input input-bordered flex items-center gap-2">
           <svg
@@ -34,7 +60,7 @@ function Signup() {
           >
             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
           </svg>
-          <input onChange={(e)=>{(setfullname(e.target.value))}} type="text" className="grow" placeholder="full Name" required />
+          <input onChange={(e)=>{setFullname(e.target.value)}} type="text" className="grow" placeholder="full_name"  required/>
         </label>
         <label className="input input-bordered flex items-center gap-2">
           <svg
@@ -49,18 +75,21 @@ function Signup() {
               clipRule="evenodd"
             />
           </svg>
-          <input onChange={(e)=>{setpassword(e.target.value)}} type="password" className="grow"   required/>
+          <input onChange={(e)=>{setpassword(e.target.value)}} type="password" className="grow" placeholder="password" required/>
         </label>
-        <label className="form-control w-full max-w-xs">
-  
-  <input onChange={(e)=>{setfile(e.target.files)}} type="file" className="file-input file-input-bordered w-full max-w-xs "  required/>
-  
-</label>
-        <button type="submit" className="btn mt-2">Button</button>
+        <input
+          type="file"
+         
+          accept="application/pdf"
+          className="form-control file-input file-input-bordered file-input-primary w-full max-w-xs"
+          required
+          onChange={(e) => setFile(e.target.files[0])}
+        />
+        <br />
+        <button className="btn btn-primary" type="submit" >
+          Submit
+        </button>
       </form>
-      <div>
-        
-      </div>
     </div>
   );
 }
