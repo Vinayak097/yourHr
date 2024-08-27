@@ -29,7 +29,7 @@ router.get("/profile", middleware, async (req, res) => {
 });
 
 
-router.get("/files/:filename", (req, res) => {
+router.get("/files/:filename",middleware, (req, res) => {
     const { filename } = req.params;
     const filePath = `./files/${filename}`;
     console.log(filename,filePath)

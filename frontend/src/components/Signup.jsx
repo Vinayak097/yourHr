@@ -8,8 +8,9 @@ function Signup() {
   const [file, setFile] = useState("");
   const [password, setpassword] = useState(null);
   const [email, setEmail] = useState(null);
-
+  const [loading,setloading]=useState(false)
   const submitImage = async (e) => {
+    setloading(true);
     e.preventDefault();
     const formData = new FormData();
 
@@ -25,13 +26,13 @@ function Signup() {
         headers: { "Content-Type": "multipart/form-data" },
       }
     );
-    if (result.data.statusText == "OK") {
-      alert("Uploaded Successfully!!!");
-    }
+    
     if(result.data.token){
       localStorage.setItem("ytoken",result.data.token)
       console.log("token settled")
     }
+    setloading(false)
+
     navigate("/")
     
   };
@@ -87,7 +88,7 @@ function Signup() {
         />
         <br />
         <button className="btn btn-primary" type="submit" >
-          Submit
+          {loading? <span className="loading loading-dots loading-lg"></span>:"Submit"}
         </button>
       </form>
     </div>

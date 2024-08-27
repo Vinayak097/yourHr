@@ -40,7 +40,8 @@ const Home = () => {
     return <p>{error}</p>;
   }
   if(loading){
-    <div className="h-screen flex items-center justify-center">  loading
+    <div className="h-screen flex items-center justify-center">  
+    <span className="loading loading-dots loading-lg"></span>
     </div>
   }
   if (!user) {
