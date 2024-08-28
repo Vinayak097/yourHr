@@ -38,13 +38,13 @@ router.post('/signup',upload.single("file"),async (req,res)=>{
     }catch(e){
         console.log("error in signup", e.message);
         return res.status(500).json("Internal server Error");
-    }
-    
+    } 
 })
 
 router.post('/login',(req,res)=>{
     res.send('login route')
 })
+
 
 
 export default router;

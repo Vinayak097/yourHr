@@ -8,7 +8,10 @@ import cors from 'cors'
 
 const app=e();
 dotenv.config();
-app.use(cors());
+app.use(cors({
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
 app.use('/auth',authRoute)
 app.use('/user',userRoute);
 
@@ -22,8 +25,6 @@ app.listen(PORT,async(req,res)=>{
         console.log(e)
         return;
     }
-    
-    
     console.log("server running on port ",PORT);
 })
 
