@@ -1,6 +1,7 @@
 import express from "express";
 import middleware from "../middleware.js";
 import User from "../model/userModel.js";
+
 const router = express.Router();
 
 router.get("/profile", middleware, async (req, res) => {
