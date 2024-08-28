@@ -26,8 +26,12 @@ function Profile() {
       const response = await axios.get(
         `${backend_url}/user/files/${user.resumeUrl}`,
         {
+          headers: {
+            authorization: localStorage.getItem("ytoken"),
+          },
           responseType: "blob",
-        }
+        },
+        
       );
       const pdfUrl = URL.createObjectURL(response.data);
       setPdf(pdfUrl);

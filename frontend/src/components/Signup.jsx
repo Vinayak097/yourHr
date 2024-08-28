@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { backend_url } from "../config";
 function Signup() {
   const navigate=useNavigate()
   const [fullname, setFullname] = useState("");
@@ -19,8 +20,7 @@ function Signup() {
     formData.append('password',password)
     formData.append('email',email);
     console.log(file, fullname);
-    const result = await axios.post(
-      "http://localhost:8000/auth/signup",
+    const result = await axios.post(`${backend_url}/auth/signup`,
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },
