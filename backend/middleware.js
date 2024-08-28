@@ -1,24 +1,27 @@
 import jwt from 'jsonwebtoken'
 
-const middleware=(req,res,next)=>{
+const   middleware=(req,res,next)=>{
     const authHeader = req.headers.authorization;
-    if (!authHeader) {
+    if (!authHeader){
         return res.status(403).json({message:"token not provided"});
     }
     try{
+        const secret=process.env.JWT_SECRET;
+        if(!secret){
+            return res.status(404).json({message:"token not secret"})
+        }
         
-        console.log(process.env.JWT_SCRET);
-        const decode=jwt.verify(authHeader,process.env.JWT_SCRET)
+        const decode=jwt.verify(authHeader,secret)
         if(!decode){
-            res.status(400).json({message:"invalid token"});
+            return res.status(400).json({message:"invalid token"});
         }
         console.log(decode)
-        req.email=decode.email;        
+        req.id=decode.id;        
         next();
 
     }catch(e){
         console.log("error in middlware ",e.message);
-        res.status(500).json("Internal server error ");
+        return res.status(500).json("Internal server error ");
     }
 }
 

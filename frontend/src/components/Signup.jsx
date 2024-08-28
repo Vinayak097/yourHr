@@ -10,32 +10,45 @@ function Signup() {
   const [password, setpassword] = useState(null);
   const [email, setEmail] = useState(null);
   const [loading,setloading]=useState(false)
-  const submitImage = async (e) => {
-    setloading(true);
-    e.preventDefault();
-    const formData = new FormData();
-
-    formData.append("file", file);
-    formData.append('fullname',fullname)
-    formData.append('password',password)
-    formData.append('email',email);
-    console.log(file, fullname);
-    const result = await axios.post(`${backend_url}/auth/signup`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
-    
-    if(result.data.token){
-      localStorage.setItem("ytoken",result.data.token)
-      console.log("token settled")
-    }
-    setloading(false)
-
-    navigate("/")
-    
+  const [error,setError]=useState("");
+  const isValid = () => {
+    return email && fullname && password && file && file.type === "application/pdf";
   };
+  const submitImage = async (e) => {
+    setError('');
+    setloading(true);
+    if (!isValid()) {
+      setError("select a valid file.")
+      
+      return;
+    }
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("fullname", fullname);
+      formData.append("password", password);
+      formData.append("email", email);
+  
+      const result = await axios.post(`${backend_url}/auth/signup`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      if (result.data.token) {
+        localStorage.setItem("ytoken", result.data.token);
+        console.log("token settled");
+      }
+  
+      navigate("/");
+    } catch (error) {
+      setError("Errro during signup")
+      console.error("Error during signup:", error);
+      
+    } finally {
+      setloading(false);
+    }
+  };
+  
   return (
     <div className="flex items-center justify-center h-screen">
       <form className="formStyle flex flex-col gap-3 text-center" onSubmit={submitImage} >
@@ -86,6 +99,7 @@ function Signup() {
           required
           onChange={(e) => setFile(e.target.files[0])}
         />
+        <p className="text-sm font-bold text-red-500">{error?error:""}</p>
         <br />
         <button className="btn btn-primary" type="submit" >
           {loading? <span className="loading loading-dots loading-lg"></span>:"Submit"}

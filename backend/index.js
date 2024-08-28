@@ -4,7 +4,7 @@ import userRoute from './Routes/userRoutes.js'
 import dotenv from 'dotenv'
 import mongoose from "mongoose";
 import cors from 'cors'
-
+import { json } from "express";
 
 const app=e();
 dotenv.config();
@@ -12,6 +12,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
+app.use(json());
 app.use('/auth',authRoute)
 app.use('/user',userRoute);
 
@@ -22,7 +23,7 @@ app.listen(PORT,async(req,res)=>{
         await mongoose.connect(process.env.MONGO_URI);
         console.log("connected to db")
     }catch(e){
-        console.log(e)
+        console.log("error in mongo connect ",e)
         return;
     }
     console.log("server running on port ",PORT);
